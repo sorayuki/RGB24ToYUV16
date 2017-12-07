@@ -12,7 +12,7 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{F9BF3A4E-F27D-47F4-AE40-09622E98D4FC}</ProjectGuid>
-    <RootNamespace>RGB24ToYCgCo10</RootNamespace>
+    <RootNamespace>RGB24ToYUV16</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -72,7 +72,7 @@
     <Library Include="avisynth.lib" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="RGB24ToYCgCo.cpp" />
+    <ClCompile Include="RGB24ToYUV16.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

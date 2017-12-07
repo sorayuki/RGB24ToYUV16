@@ -23,7 +23,7 @@
     <Library Include="avisynth.lib" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="RGB24ToYCgCo.cpp">
+    <ClCompile Include="RGB24ToYUV16.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
