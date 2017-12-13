@@ -852,59 +852,41 @@ AVSValue __cdecl CreateRGB24ToYUV0(ConvertParam* cp, AVSValue args, void* user_d
 
 AVSValue __cdecl CreateRGB24ToYUV(AVSValue args, void* user_data, IScriptEnvironment* env)
 {
-    char* paramStr = _strdup(args[1].AsString());
+	int precision = args[1].AsInt(10);
+	std::string hackmode = args[2].AsString("STACKED");
+	std::string colorspace = args[3].AsString("YV12");
+	std::string matrix = args[4].AsString("BT709");
+	std::string level = args[5].AsString("TV");
 
     ConvertParam cp;
 
-    char* p = paramStr;
-    char* pend = paramStr + strlen(paramStr);
-    
-    while (p < pend)
-    {
-        p = strtok(p, " ");
+	if (precision == 10) cp.outDepth = ConvertParam::BIT_10;
+	else if (precision == 16) cp.outDepth = ConvertParam::BIT_16;
+	else env->ThrowError(PLUGIN_NAME ": unknown precision.");
 
-        if (strcmp(p, "TV") == 0)
-            cp.outRange = ConvertParam::RANGE_TV;
-        else if (strcmp(p, "PC") == 0)
-            cp.outRange = ConvertParam::RANGE_PC;
-        else if (strcmp(p, "BT601") == 0)
-            cp.outMat = ConvertParam::MAT_BT601;
-        else if (strcmp(p, "BT709") == 0)
-            cp.outMat = ConvertParam::MAT_BT709;
-        else if (strcmp(p, "BT2020") == 0)
-            cp.outMat = ConvertParam::MAT_BT2020;
-        else if (strcmp(p, "YCgCo") == 0)
-            cp.outMat = ConvertParam::MAT_YCgCo;
-        else if (strcmp(p, "16BIT") == 0)
-            cp.outDepth = ConvertParam::BIT_16;
-        else if (strcmp(p, "10BIT") == 0)
-            cp.outDepth = ConvertParam::BIT_10;
-        else if (strcmp(p, "I444") == 0)
-            cp.outCS = ConvertParam::CS_YUV444;
-        else if (strcmp(p, "I420") == 0)
-            cp.outCS = ConvertParam::CS_YUV420;
-        else if (strcmp(p, "INTERLEAVED") == 0)
-            cp.outMode = ConvertParam::HACK_INTERLEAVED;
-        else if (strcmp(p, "STACKED") == 0)
-            cp.outMode = ConvertParam::HACK_STACKED;
-        else
-        {
-            char buf[256];
-            strcpy_s(buf, p);
-            free(paramStr);
-            env->ThrowError(PLUGIN_NAME ": unknown param %s", buf);
-        }
+	if (hackmode == "INTERLEAVED") cp.outMode = ConvertParam::HACK_INTERLEAVED;
+	else if (hackmode == "STACKED") cp.outMode = ConvertParam::HACK_STACKED;
+	else env->ThrowError(PLUGIN_NAME ": unknown hackmode");
 
-        p += strlen(p) + 1;
-    }
+	if (colorspace == "YV12") cp.outCS = ConvertParam::CS_YUV420;
+	else if (colorspace == "YV24") cp.outCS = ConvertParam::CS_YUV444;
+	else env->ThrowError(PLUGIN_NAME ": unknown colorspace");
 
-    free(paramStr);
-    
+	if (matrix == "BT709") cp.outMat = ConvertParam::MAT_BT709;
+	else if (matrix == "BT601") cp.outMat = ConvertParam::MAT_BT601;
+	else if (matrix == "BT2020") cp.outMat = ConvertParam::MAT_BT2020;
+	else if (matrix == "YCgCo") cp.outMat = ConvertParam::MAT_YCgCo;
+	else env->ThrowError(PLUGIN_NAME ": unknown matrix");
+
+	if (level == "TV") cp.outRange = ConvertParam::RANGE_TV;
+	else if (level == "PC") cp.outRange = ConvertParam::RANGE_PC;
+	else env->ThrowError(PLUGIN_NAME ": unknown level");
+
     return CreateRGB24ToYUV0(&cp, args, user_data, env);
 }
 
 extern "C" __declspec(dllexport) const char* __stdcall AvisynthPluginInit3(IScriptEnvironment* env, const AVS_Linkage* const vectors) {
-    env->AddFunction("RGB24ToYUV", "cs", &CreateRGB24ToYUV, 0);
+    env->AddFunction("RGB24ToYUV", "c[Precision]i[HackMode]s[ColorSpace]s[Matrix]s[Level]s", &CreateRGB24ToYUV, 0);
     
     return PLUGIN_NAME " Plugin.";
 }
