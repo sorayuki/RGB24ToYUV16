@@ -39,5 +39,5 @@ output YUV color matrix.
 
 ##### -- Level
 value range for output sample
-- "TV": 64~940 in 10-bit and 4096~60160 in 16-bit for Y planar; 64~960 in 10-bit and 4096~61440 in 16-bit for UV planar.
-- "PC": 0~65535 in 16-bit or 0~1024 in 10bit for all planar.
+- "TV": 64 ~ 940 in 10-bit and 4096 ~ 60160 in 16-bit for Y planar; 64 ~ 960 in 10-bit and 4096 ~ 61440 in 16-bit for UV planar.
+- "PC": 0 ~ 65535 in 16-bit or 0 ~ 1024 in 10bit for all planar.
